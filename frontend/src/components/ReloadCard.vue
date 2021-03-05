@@ -37,7 +37,8 @@
       <p class="mt-4">
         Changes to the backend code don't require a server restart, but you will
         need to refresh your browser to see changes. This Django backend starts
-        a development server by running the <a>runserver</a> command.
+        a development server by running the
+        <a :href="url4" target="_blank" rel="noopener">runserver</a> command.
       </p>
       <p>
         You can find the runserver command in
