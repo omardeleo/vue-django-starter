@@ -5,8 +5,8 @@ and [Shipyard](https://shipyard.build) out of the box.
 
 ## Includes
 
-- [React](https://github.com/facebook/react/) - JavaScript library for building user interfaces
-- [Material-UI](https://github.com/mui-org/material-ui) - React components for faster and simpler web development
+- [Vue](https://github.com/vuejs/vue) - progressive JavaScript framework for building user interfaces
+- [Vuetify](https://github.com/vuetifyjs/vuetify) - Material Component library for Vue.js
 - [Django](https://github.com/django/django) - Python web framework (batteries included)
 - [Poetry](https://github.com/python-poetry/poetry) - modern dependency management for Python
 - [PostgreSQL](https://www.postgresql.org/) - database
