@@ -30,6 +30,7 @@
           class="my-editor"
           v-model="codeSnippet1"
           :highlight="highlighter"
+          :readonly="true"
         >
         </prism-editor>
       </div>
@@ -51,6 +52,7 @@
           class="my-editor"
           v-model="codeSnippet2"
           :highlight="highlighter"
+          :readonly="true"
         >
         </prism-editor>
       </div>
