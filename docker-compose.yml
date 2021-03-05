@@ -1,39 +1,57 @@
-VOLUME=$(shell basename $(PWD))
+version: '3'
+   
+services:
 
-develop: clean build migrations.all run
+  frontend:
+    labels:
+      shipyard.route: '/'
+    build:
+      context: 'frontend'
+    ports:
+      - '3000:3000'
+    env_file:
+      - frontend/frontend.env
+    volumes:
+      - './frontend/src:/app/src'
 
-clean:
-	docker-compose rm -vf
+  backend:
+    labels:
+      shipyard.before: 'poetry run python src/manage.py migrate'
+      shipyard.route: '/api'
+    build: 'backend'
+    volumes:
+      - './backend/src:/srv/src/'
+      - './backend/poetry.lock:/srv/poetry.lock/'
+      - './backend/pyproject.toml:/srv/pyproject.toml/'
+    environment:
+      LOCALSTACK_HOST: 'localstack'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
 
-build:
-	docker-compose build
+  postgres:
+    image: 'postgres:9.6-alpine'
+    restart: always
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=obscure-user
+      - POSTGRES_PASSWORD=obscure-password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - '5432'
 
-run:
-	docker-compose up
+  localstack:
+    image: 'localstack/localstack'
+    environment:
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - 'localstack:/tmp/localstack'
+    ports:
+      - '4566'
 
-frontend-shell:
-	docker-compose run frontend \
-	  sh
-
-backend-shell:
-	docker-compose run backend \
-	  sh
-
-python-shell:
-	docker-compose run backend \
-	  poetry run python src/manage.py shell
-
-postgres.data.delete: clean
-	docker volume rm $(VOLUME)_postgres
-
-postgres.start:
-	docker-compose up -d postgres
-	docker-compose exec postgres \
-	  sh -c 'while ! nc -z postgres 5432; do sleep 0.1; done'
-
-postgres-shell: postgres.start
-	docker exec -it $(VOLUME)_postgres_1 sh
-
-migrations.all: postgres.start
-	docker-compose run backend \
-	  poetry run python src/manage.py migrate
+volumes:
+  postgres:
+  localstack:
